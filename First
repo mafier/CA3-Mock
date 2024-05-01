@@ -1,0 +1,107 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace MockCa3
+{
+    //Team Class Declaration
+    public class Team
+    {
+        //Attributes
+        string _name;
+        int _goalsScored;
+        int _goalsConceded;
+        int _matchesPlayed;
+        int _pointsTotal;
+        int _teamNumber;
+        static int id;
+
+        //Properties
+        public string Name
+        {
+            get { return _name; }
+        }
+
+        public int MatchesPlayed
+        {
+            get { return _matchesPlayed; }
+        }
+
+        public int GoalsScored
+        {
+            get { return _goalsScored; }
+        }
+
+        public int GoalsConceded
+        {
+            get { return _goalsConceded; }
+        }
+
+        public int Points
+        {
+            get { return _pointsTotal; }
+            set
+            {
+                if (value < 0)
+                {
+                    _pointsTotal = 0;
+                }
+                else
+                {
+                    _pointsTotal = value;
+                }
+            }
+        }
+
+        //Constructors
+        //Default constructor
+        public Team()
+        {
+            id++;
+            this._teamNumber = id;
+        }
+
+        //Constructor with name parameter
+        public Team(string name)
+        {
+            id++;
+            this._teamNumber = id;
+            _name = name;
+        }
+
+        //Methods
+        public void AddMatchResult(int goalsScored, int goalsLost)
+        {
+            //Add variables to each team
+            _matchesPlayed = MatchesPlayed + 1;
+            _goalsScored += goalsScored;
+            _goalsConceded += goalsLost;
+
+            //Determine win/lose/draw
+            if (goalsScored == goalsLost)
+            {
+                Points = Points + 1;
+            }
+            else if (goalsScored > goalsLost)
+            {
+                Points = Points + 2;
+            }
+        }
+
+        //Difference of points
+        public int CalculateGoalPerformance()
+        {
+            return (GoalsScored - GoalsConceded);
+        }
+
+        //Override of ToString
+        public override string ToString()
+        {
+            return $"{"ID: ",-4}{_teamNumber,-2} | {"Team Name:",-10} {_name,-20} | {"Played: ",-8}{MatchesPlayed,-4} | {"Goals Scored: ",-14}{GoalsScored,-4} | {"Goals Lost: ",-12}{GoalsConceded,-4} | {"Points: ",-8}{Points,-4}";
+        }
+
+
+    }//end class Team
+}
