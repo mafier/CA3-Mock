@@ -1,0 +1,147 @@
+//Import statement (to use Team class)
+using MockCa3;
+using System.Xml.Linq;
+
+//Namespace Declaration
+namespace Part2
+{
+    //Class Declaration
+    internal class Program
+    {
+        //Static array of teams shared across all methods
+        static Team[] teams = new Team[6];
+
+        //Main method where the Program begins
+        static void Main(string[] args)
+        {
+            CreateTeams();
+            ReadFile();
+            PrintTable();
+        }//end Main
+
+        //Method to create teams
+        static void CreateTeams()
+        {
+            teams[0] = new Team("Sligo");
+            teams[1] = new Team("Mayo");
+            teams[2] = new Team("Donegal");
+            teams[3] = new Team("Leitrim");
+            teams[4] = new Team("Roscommon");
+            teams[5] = new Team("Longford");
+        }
+
+        //Read results.csv and add scores to teams
+        static void ReadFile()
+        {
+            //Null fs/sr so that they can be closed if exception is thrown
+            FileStream fs = null;
+            StreamReader sr = null;
+
+            //New Line and Fields for reading the file
+            string nl;
+            string[] fields;
+
+            try
+            {
+                //Open file stream and stream reader
+                fs = new FileStream("results.csv", FileMode.Open, FileAccess.Read);
+                sr = new StreamReader(fs);
+
+                //Read new line
+                nl = sr.ReadLine();
+
+                //Keep reading new lines until file is empty
+                while (nl != null)
+                {
+                    //Divide the line in fields
+                    fields = nl.Split(',');
+
+                    //Loop through the fields
+                    for (int i = 0; i < teams.Length; i++)
+                    {
+                        //Add scores to first team in a match
+                        if (teams[i].Name.ToLower() == fields[0].ToLower())
+                        {
+                            teams[i].AddMatchResult(int.Parse(fields[2]), int.Parse(fields[3]));
+                        }
+
+                        //Add scores to second team in a match
+                        if (teams[i].Name.ToLower() == fields[1].ToLower())
+                        {
+                            teams[i].AddMatchResult(int.Parse(fields[3]), int.Parse(fields[2]));
+                        }
+                    }
+
+                    //Read new line
+                    nl = sr.ReadLine();
+
+                }//end while
+            }
+            catch (FileNotFoundException)
+            {
+                Console.WriteLine("File not found");
+            }
+            catch (IOException)
+            {
+                Console.WriteLine("Problem with a file");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+            finally
+            {
+                if (fs != null) fs.Close();
+                if (sr != null) sr.Close();
+            }
+        }//end ReadFile
+
+        static void PrintTable()
+        {
+            //Variables used to determine top teams
+            int mostPoints = teams[0].Points;
+            int leastConceded = teams[0].GoalsConceded;
+            int mostScored = teams[0].GoalsScored;
+
+            //Used to store team index
+            int winningTeam = 0;
+            int bestDefense = 0;
+            int topScorer = 0;
+
+            //Loop through all teams
+            for(int i = 0; i<teams.Length;i++) 
+            {
+                //Find team with most points
+                if(mostPoints < teams[i].Points) 
+                {
+                    mostPoints = teams[i].Points;
+                    winningTeam = i;
+                }
+
+                //Find team with least goals lost
+                if(leastConceded > teams[i].GoalsConceded) 
+                {
+                    leastConceded = teams[i].GoalsConceded;
+                    bestDefense = i;
+                }
+
+                //Find team with most scored goals
+                if(mostScored < teams[i].GoalsScored)
+                {
+                    mostScored = teams[i].GoalsScored;
+                    topScorer = i;
+                }
+
+                //Print teams data
+                Console.WriteLine(teams[i].ToString());
+            }
+
+            //Print top teams in categories
+            Console.WriteLine($"\nWinning Team : {teams[winningTeam].Name} with {teams[winningTeam].Points} points");
+            Console.WriteLine($"Best Defence : {teams[bestDefense].Name} with {teams[bestDefense].GoalsConceded} lost goals");
+            Console.WriteLine($"Most Scored  : {teams[topScorer].Name} with {teams[topScorer].GoalsScored} scored goals");
+        }
+
+    }//end class
+
+}//end namespace
