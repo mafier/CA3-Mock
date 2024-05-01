@@ -1,0 +1,40 @@
+//Namespace Declaration
+namespace MockCa3
+{
+    //Program Class Declaration
+    internal class Program
+    {
+        //Main method where the Program begins
+        static void Main(string[] args)
+        {
+            Team[] teams = new Team[5]
+            {
+                new Team(),
+                new Team("Chelsea"),
+                new Team(),
+                new Team("Liverpool"),
+                new Team("Arsenal")
+            };
+
+            teams[1].AddMatchResult(2, 1);
+            teams[3].AddMatchResult(1, 2);
+
+            teams[1].AddMatchResult(1, 1);
+            teams[4].AddMatchResult(1, 1);
+
+            teams[3].AddMatchResult(0, 3);
+            teams[4].AddMatchResult(3, 0);
+
+            foreach(Team team in teams) 
+            {
+                Console.WriteLine(team.ToString() +"| Goals Difference: "+team.CalculateGoalPerformance());
+            }
+
+
+
+        }//end Main
+
+    }//end class Program
+
+
+}//end Namespace
